@@ -6,7 +6,7 @@ Ce projet est un système multi-agents utilisant l'IA pour générer, réviser e
 Java 17+\
 langchain4j\
 Groq LLM\
-AllMiniLmL6V2\
+AllMiniLmL6V2 (Hugging Face)\
 SLF4J
 ### 📋 Prérequis
 JDK 17 ou supérieur\
