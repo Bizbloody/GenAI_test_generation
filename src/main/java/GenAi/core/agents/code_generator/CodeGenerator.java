@@ -1,34 +1,35 @@
-package agents.code_generator;
+package GenAi.core.agents.code_generator;
 
-import api.ApiConfiguration;
-import api.Assistant;
-import rag.Rag;
-import api.AzureOpenAiService;
-import api.OpenAiService;
+import GenAi.core.api.Assistant;
+import GenAi.core.rag.RagService;
+import GenAi.infrastructure.llm.FoundryLlmService;
+
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.service.AiServices;
-import dev.langchain4j.rag.content.retriever.ContentRetriever;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class CodeGenerator {
-    private final ApiConfiguration apiConfig;
 
-    public CodeGenerator(ApiConfiguration apiConfig) { this.apiConfig = apiConfig; }
+    private final FoundryLlmService foundryLlmService;
+    private final RagService ragService;
+
+    public CodeGenerator(FoundryLlmService foundryLlmService, RagService ragService) {
+
+        this.foundryLlmService = foundryLlmService;
+        this.ragService = ragService;
+    }
 
     public Assistant creationAgentCodeGenerator() {
-        ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
-        /*AzureOpenAiService azureService = new AzureOpenAiService(apiConfig);*/
-        OpenAiService openAiService = new OpenAiService(apiConfig);
-        /*Rag rag = new Rag();*/
-        // Utiliser l'instance unique de RAG
-        ContentRetriever contentRetriever = Rag.getInstance().getContentRetriever();
 
+        ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
 
         return AiServices.builder(Assistant.class)
-                .chatModel(/*azureService.getChatModel()*/openAiService.getChatModel())
+                .chatModel(foundryLlmService.getChatModel()) // ✅ propre
                 .chatMemory(chatMemory)
-                /*.contentRetriever(rag.getEmbeddingStoreContentRetriever())*/
-                .contentRetriever(contentRetriever)  // ContentRetriever est l'interface correcte
+                .contentRetriever(ragService.getContentRetriever())
                 .systemMessageProvider(chatMemoryId -> "As a test code generator, use the following analysis and requirements to generate comprehensive test code.\n" +
                         "\n" +
                         "            PARSED DOCUMENTATION AND CODE ANALYSIS:\n" +

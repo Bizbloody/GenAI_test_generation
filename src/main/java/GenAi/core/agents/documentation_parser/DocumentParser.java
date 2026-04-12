@@ -1,34 +1,35 @@
-package agents.documentation_parser;
+package GenAi.core.agents.documentation_parser;
 
-import api.ApiConfiguration;
-import api.Assistant;
-import api.OpenAiService;
-import rag.Rag;
-import api.AzureOpenAiService;
+import GenAi.core.api.Assistant;
+import GenAi.core.rag.RagService;
+import GenAi.infrastructure.llm.FoundryLlmService;
+
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.service.AiServices;
-import dev.langchain4j.rag.content.retriever.ContentRetriever;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class DocumentParser {
-    private final ApiConfiguration apiConfig;
 
-    public DocumentParser(ApiConfiguration apiConfig) {
-        this.apiConfig = apiConfig;
+    private final FoundryLlmService foundryLlmService;
+    private final RagService ragService;
+
+    public DocumentParser(FoundryLlmService foundryLlmService, RagService ragService) {
+
+        this.foundryLlmService = foundryLlmService;
+        this.ragService = ragService;
     }
 
     public Assistant creationAgentDocumentParser() {
+
         ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
-        /*AzureOpenAiService azureService = new AzureOpenAiService(apiConfig);*/
-        OpenAiService openAiService = new OpenAiService(apiConfig);
-        /*Rag rag = new Rag();*/
-        ContentRetriever contentRetriever = Rag.getInstance().getContentRetriever();
 
         return AiServices.builder(Assistant.class)
-                .chatModel(/*azureService.getChatModel()*/openAiService.getChatModel())
+                .chatModel(foundryLlmService.getChatModel()) // ✅ propre
                 .chatMemory(chatMemory)
-                /*.contentRetriever(rag.getEmbeddingStoreContentRetriever())*/
-                .contentRetriever(contentRetriever)  // ContentRetriever est l'interface correcte
+                .contentRetriever(ragService.getContentRetriever())
                 .systemMessageProvider(chatMemoryId -> "As a documentation and code parser, analyze the following components to prepare for test generation:\n" +
                         "\n" +
                         "        1. FRAMEWORK DOCUMENTATION ANALYSIS:\n" +
