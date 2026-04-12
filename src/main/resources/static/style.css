@@ -73,3 +73,18 @@ pre {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+
+.footer {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.footer a {
+    text-decoration: none;
+    color: #0078d4;
+    font-weight: bold;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
