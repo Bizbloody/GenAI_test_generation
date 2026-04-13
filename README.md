@@ -1,123 +1,81 @@
-# Test Generation Assistant Project
+# <p align="center"> 🚀 GenAI Test Generation
+<p align="center"> <img src="https://img.shields.io/badge/Java-17-orange" /> <img src="https://img.shields.io/badge/Spring_Boot-3.2.2-brightgreen" /> <img src="https://img.shields.io/badge/Azure-OpenAI-blue" /> <img src="https://img.shields.io/badge/PostgreSQL-pgvector-blueviolet" /> <img src="https://img.shields.io/badge/Status-Active-success" /> </p> <p align="center"> <b>Generate unit tests automatically using AI + RAG + Azure</b> </p>
 
-Ce projet est un système multi-agents utilisant l'IA pour générer, réviser et optimiser du code de test. Il utilise langchain4j avec Groq LLM (Azure est dans le code mais pas test) et intègre un système RAG (Retrieval Augmented Generation) pour enrichir les réponses avec de la documentation pertinente.
+### 🧠  Overview
 
-### 🛠 Technologies Utilisées
-Java 17+\
-langchain4j\
-Groq LLM\
-AllMiniLmL6V2 (Hugging Face)\
-SLF4J
-### 📋 Prérequis
-JDK 17 ou supérieur\
-Maven\
-Une clé API Groq\
-Documentation à indexer dans le dossier spécifié
-### 🔧 Installation
-Clonez le repository :
+GenAI Test Generation is a web application that leverages Retrieval-Augmented Generation (RAG) to generate unit tests from source code using AI models hosted on Azure.
 
-    git clone [url-du-repo]
+👉 The system enriches generation with custom documentation stored as embeddings in a vector database.
 
-Configurez votre fichier .env à la racine du projet :
+### 🎯 Features
 
-    GROQ_API_KEY=votre_clé_api_groq 
-        
-    GROQ_MODEL=le model que vous utilisé
+✨ Upload technical documentation (PDF)\
+🧠 Automatic embedding generation (Azure OpenAI)\
+🗄️ Vector storage using PostgreSQL + pgvector\
+🔍 Semantic search (Top-K retrieval)\
+💻 Upload source code\
+⚡ AI-powered test generation\
+🧩 Modular multi-agent architecture
 
-Installez les dépendances avec Maven :
+### 🖼️ Demo
+📄 Upload documentation ( function deactivated for general users )
 
-mvn clean install
+💻 Generate tests
 
-### 🚀 Utilisation
-Placez votre documentation dans le dossier spécifié pour le RAG :
-/home/langchain4j/documentation/
+### ⚙️ Tech Stack
+Backend: Spring Boot\
+AI: Azure OpenAI (Foundry)\
+RAG: LangChain4j\
+Database: PostgreSQL + pgvector\
+Frontend: HTML / JavaScript
 
-Exécutez le programme :
+### 🔐 Configuration
 
-    public class AgentCom {
-        public static void main(String[] args) {
-    
-            // ... configuration ...
-            String finalCode = workflow.processCodeRequest(
-            "Create tests for user authentication API"
-            );
-        }
-    }
+All secrets are handled via environment variables:
 
-### 🔄 Workflow
+#### Azure
 
-Le système suit un processus itératif :
+    AZURE_FOUNDRY_CHAT_ENDPOINT=
+    AZURE_FOUNDRY_CHAT_KEY=
+    AZURE_FOUNDRY_CHAT_MODEL=
 
-Document Parser : Analyse la documentation et le code existant
+    AZURE_FOUNDRY_EMBED_ENDPOINT=
+    AZURE_FOUNDRY_EMBED_KEY=
+    AZURE_FOUNDRY_EMBED_MODEL=
+#### Database
 
-Code Generator : Génère le code
+    SPRING_DATASOURCE_URL=
+    SPRING_DATASOURCE_USERNAME=
+    SPRING_DATASOURCE_PASSWORD=
 
-Code Feedback : Review le code avec contexte RAG
+#### File Upload
+    SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=10MB
+    SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE=10MB
 
-### 📦 Dépendances Maven:
+### 🗄️ Database Schema
 
-    <dependencies>
-    <!-- langchain4j -->
-    <dependency>
-        <groupId>dev.langchain4j</groupId>
-        <artifactId>langchain4j</artifactId>
-        <version>1.1.0</version>
-    </dependency>
+    CREATE TABLE documents (
+        id SERIAL PRIMARY KEY,
+        content TEXT,
+        embedding VECTOR( <vector length for your embedding model> )
+    );
 
-    <!-- Embeddings -->
-    <dependency>
-        <groupId>dev.langchain4j</groupId>
-        <artifactId>langchain4j-embeddings-all-minilm-l6-v2</artifactId>
-        <version>1.1.0-beta7</version>
-    </dependency>
+### ▶️ Run the App
 
-    <!-- Azure langchain (pour azure) -->
-    <dependency>
-        <groupId>dev.langchain4j</groupId>
-        <artifactId>langchain4j-azure-open-ai</artifactId>
-        <version>1.1.0-rc1</version>
-    </dependency>
+run src\main\java\GenAi\GenAiApplication.java
 
-    <!-- .env in java -->
-    <dependency>
-        <groupId>io.github.cdimascio</groupId>
-        <artifactId>dotenv-java</artifactId>
-        <version>3.2.0</version>
-    </dependency>
+Open:
 
-    <!-- openai (pour groq)-->
-    <dependency>
-        <groupId>dev.langchain4j</groupId>
-        <artifactId>langchain4j-open-ai</artifactId>
-        <version>1.1.0</version>
-    </dependency>
+http://localhost:8080
 
-    <!-- Logging -->
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>2.0.7</version>
-    </dependency>
-    </dependencies>
+### 📌 Key Highlights
+🔥 Full RAG pipeline implementation\
+⚡ Custom vector search with pgvector\
+☁️ Azure OpenAI integration\
+🧠 Embeddings (3072 dimensions)\
+🧩 Clean modular architecture (agents)
 
-### ✨ Améliorations possibles
+### 👨‍💻 Author
 
-[ ] Interface utilisateur web ou intégration ide
+Christophe Martinez
 
-[ ] Persistance des données
-
-[ ] Amélioration des prompts
-
-[ ] Multiple sessions
-
-[ ] Use LangGraph4j instead to create the agents communication
-
-[ ] utilisation du stockage cloud pour le rag avec azure Postgresql et donc utilisation de pgvector
-
-### 🐛 Résolution des Problèmes Courants
-
-Assurez-vous que toutes les dépendences Langchain4j sont de la même version
-
-### 📚 Documentation Additionnelle
-
-langchain4j Documentation
